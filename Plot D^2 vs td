@@ -1,0 +1,28 @@
+clc; clear; close all;
+
+% Provided Data 
+Area = [57, 56, 56, 55, 54, 54, 53, 52, 51, 50, 49, 49, 48, 46, 46, 44, 43, 42, 40, 40, 38, 34, 33, 31, 29];
+Mean = [151.256, 151.623, 152.402, 152.62, 151.887, 154.478, 152.663, 153.933, 153.584, 154.132, 154.195, 150.704, 152.094, 154.269, 155.663, 154.101, 157.953, 160.978, 166.016, 164.882, 168.068, 164.986, 168.713, 169.558, 157.548];
+Length_mm = [1.874309764, 1.857474747, 1.835016835, 1.806969697, 1.79013468, 1.784511785, 1.756464646, 1.717171717, 1.666666667, 1.632996633, 1.616161616, 1.599326599, 1.576868687, 1.50952862, 1.498316498, 1.430976431, 1.397306397, 1.374848485, 1.318754209, 1.307508418, 1.234579125, 1.122323232, 1.077441077, 1.004478114, 0.9259259259];
+
+% Convert Length in mm to meters
+D0_mm = Length_mm; % Droplet diameter in mm
+D0_m = D0_mm * 1e-3; % Convert to meters
+
+K_avg = 1.31E-09; % m²/s
+
+% Compute droplet lifetime (td) using the formula: t_d = D0^2 / K
+td = (D0_m.^2) / K_avg;
+
+% Create a results table
+Results = table(td, D0_m);
+disp(Results);
+
+% Plot D0 vs. td
+figure1;
+plot(td, D0_m, 'bo-', 'LineWidth', 1.5, 'MarkerSize', 6);
+ylabel('Droplet Diameter (m)');
+xlabel('Droplet Lifetime (s)');
+title('Droplet Diameter vs. Lifetime');
+grid on;
+
