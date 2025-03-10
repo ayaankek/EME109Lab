@@ -1,0 +1,57 @@
+%Calculate Initial Values
+
+clc; clear; close all;
+
+% Given parameters
+T_inf = 18; % Ambient temperature in Celsius
+Y_inf = 0; % Mass fraction of water at infinity
+P_inf = 758.952; % Ambient pressure in mm Hg
+rho = 1.293; % Gas density in kg/m^3
+D_ab = 0.2523 * 1e-4; % Binary diffusivity (cm^2/s to m^2/s)
+rho_l = 997; % Liquid density in kg/m^3
+k_g = 0.026; % Gas thermal conductivity in W/m K
+h_fg = 2257 * 1e3; % Enthalpy of vaporization in J/kg
+cp_g = 1.9 * 1e3; % Specific heat of vapor in J/kg K
+Mw = 18.016; % Molecular weight of water in g/mol
+M_air = 28.85; % Molecular weight of air in g/mol
+P_atm = 0.99422712; % Atmospheric pressure in atm
+
+% User input for Ts and Psat (in atm)
+Ts = input('Enter the surface temperature (Ts) in Celsius: ');
+Psat_atm = input('Enter the saturation pressure (Psat) in atm: '); % 0.0086109055 for 5C
+
+% Convert Psat from atm to mm Hg (1 atm = 760 mm Hg)
+Psat = Psat_atm * 760; 
+
+% Calculate X_w,s and Y_w,s
+X_w_s = Psat / (P_atm * 760); % Convert P_atm to mm Hg for consistency
+M_mix = X_w_s * Mw + (1 - X_w_s) * M_air;
+Y_w_s = X_w_s * Mw / M_mix;
+
+% Debugging outputs
+fprintf('\nIntermediate Calculations:\n');
+fprintf('X_w_s = %.6f\n', X_w_s);
+fprintf('Y_w_s = %.6f\n', Y_w_s);
+
+% Compute B_Y and B_q
+B_Y = (Y_w_s - Y_inf) / (1 - Y_w_s);
+B_q = (cp_g * (T_inf - Ts)) / h_fg;
+
+% Debugging outputs
+fprintf('B_Y = %.6e\n', B_Y);
+fprintf('B_q = %.6e\n', B_q);
+
+% Compute K_Y and K_q
+K_Y = (8 * rho * D_ab / rho_l) * log(1 + B_Y);
+K_q = (8 * k_g / (rho_l * cp_g)) * log(1 + B_q);
+
+% Debugging outputs
+fprintf('\nResults:\n');
+fprintf('K_Y = %.6e\n', K_Y);
+fprintf('K_q = %.6e\n', K_q);
+
+% Compute the average K
+K_avg = (K_Y + K_q) / 2;
+
+% Display the average K
+fprintf('Average K (K_avg) = %.6e\n', K_avg);
